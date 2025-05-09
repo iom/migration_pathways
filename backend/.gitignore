@@ -1,0 +1,6 @@
+.env
+iomuc2_env
+__pycache__/
+chroma_store
+embedding_metadata.json
+adminpass.py

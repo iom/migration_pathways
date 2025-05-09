@@ -1,0 +1,140 @@
+.ResponsiveIllustration-top {
+        border-radius: 0 0 30px 30px;
+
+        padding-top: 20px;
+        padding-bottom: 15px;
+
+        width: 100%;
+
+        background: #FFF7E5;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+
+        position: relative;
+}
+
+.ResponsiveIllustration_top-motto {
+        font-family: "OpenSans";
+        font-weight: 800;
+        font-size: 18px;
+        line-height: 18px;
+        text-transform: uppercase;
+        /* text-align: center; */
+}
+
+.ResponsiveIllustration_top-motto span {
+        color: #FF671F;
+}
+
+.ResponsiveIllustration_top-concept {
+        height: 150px;
+}
+
+.ResponsiveIllustration_top-leftCircle {
+        position: absolute;
+        top: calc(50% - 36px);
+        left: 0;
+}
+
+.ResponsiveIllustration_top-topRightCircle {
+        position: absolute;
+        top: 0;
+        right: 0;
+}
+
+.ResponsiveIllustration-right {
+        position: relative;
+
+        width: 100%;
+        height: 100%;
+}
+
+.ResponsiveIllustration_right-blueRectangle {
+        position: absolute;
+
+        background: #0033AE;
+        height: 60%;
+        width: 60%;
+
+        bottom: 0;
+
+        border-radius: 30px 0 0 30px;
+}
+
+.ResponsiveIllustration_right-orangeRectangle {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+
+        height: 70%;
+        width: 50%;
+
+        z-index: 2;
+
+        border-radius: 0 30px 0 30px;
+
+        background: #FF671F;
+}
+
+.ResponsiveIllustration_right-yellowRectangle {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        height: 40%;
+        width: 70%;
+
+        z-index: 1;
+
+        border-radius: 30px 0 0 0;
+
+        background: #FFC649;
+}
+
+.ResponsiveIllustration_right-contentRectangle {
+        background: #FFF7E5;
+
+        position: absolute;
+
+        height: 90%;
+        width: 90%;
+
+        z-index: 3;
+
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+
+        border-radius: 30px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 10%;
+        align-items: center;
+        justify-content: center;
+
+        padding: 5%;
+}
+
+.ResponsiveIllustration_right-motto {
+        height: 15%;
+}
+
+.ResponsiveIllustration_right-concept {
+        height: 60%;
+}
+
+.ResponsiveIllustration_right-topRightCircle {
+        position: absolute;
+
+        z-index: 4;
+
+        top: 0;
+        right: 0;
+
+        height: 20%;
+}
