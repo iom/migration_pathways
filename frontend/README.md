@@ -1,16 +1,21 @@
-# My Rafiki  
+# Migration Pathways - Frontend  
 
 ---  
 
 ### Brief Intro  
-My Rafiki is a chatbot application for helping aspiring migrants.  
+Migration Pathways is a chatbot application for helping aspiring migrants. This is the frontend code of the chatbot.  
 
 ### Stack  
 ReactJS  
 Python  
 PostgreSQL  
+Flask  
 
-### Usage  
+### First-time Setup and Run  
 cd frontend  
 npm i  
+npm run dev  
+
+### Run  
+cd frontend  
 npm run dev  
