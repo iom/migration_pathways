@@ -1,0 +1,12 @@
+flask
+flask_cors
+sqlalchemy
+psycopg2-binary
+python-dotenv
+PyJWT
+requests
+beautifulsoup4
+langchain_community==0.2.3
+openai==0.28.1
+chromadb
+tiktoken

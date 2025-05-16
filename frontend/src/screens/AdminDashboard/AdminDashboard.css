@@ -1,0 +1,186 @@
+.AdminDashboard {
+        background: #f2f2f2;
+
+        height: 100svh;
+
+        font-family: "OpenSans";
+
+        overflow: hidden;
+}
+
+.AdminDashboard_header {
+        background: white;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        padding: 0 30px;
+
+        height: 55px;
+
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+
+.AdminDashboard_appLogo {
+        height: 16px;
+}
+
+.AdminDashboard_header_delineator {
+        width: 1px;
+        height: 24px;
+
+        border: 1px solid #c0c0c0;
+
+        margin: 0 20px;
+}
+
+.AdminDashboard_authLogo {
+        height: 24px;
+
+        margin-right: 7.5px;
+}
+
+.AdminDashboard_content {
+        display: flex;
+        flex-direction: column;
+
+        max-height: calc(100% - 60px);
+        /* width: 750px; */
+
+        margin: 0 auto;
+        padding: 20px 30px;
+
+        overflow: hidden;
+}
+
+.AdminDashboard_title {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+
+        padding: 0 5px;
+}
+
+.AdminDashboard_title_left {
+        font-size: 32px;
+        font-weight: 300;
+
+        display: flex;
+        align-items: center;
+        gap: 17.5px;
+}
+
+.AdminDashboard_title_left > img {
+        height: 45px;
+}
+
+.AdminDashboard_title_right {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+
+        height: 40px;
+
+        background: white;
+        border-radius: 20px;
+        border: 1.5px solid #c0c0c0;
+
+        padding-left: 7.5px;
+        padding-right: 15px;
+
+        overflow: hidden;
+}
+
+.AdminDashboard_title_right > img {
+        height: 24px;
+}
+
+.AdminDashboard_searchInput {
+        min-width: 100px;
+
+        border: none;
+        outline: none;
+}
+
+.AdminDashboard_table {
+        display: block;
+        width: 100%;
+
+        border-radius: 12px;
+
+        background: white;
+
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+        margin: 2px;
+        margin-top: 15px;
+        padding: 0;
+
+        overflow-y: auto;
+        border: 0;
+        border-collapse: separate;
+        border-spacing: 0 5px;
+}
+
+.AdminDashboard_table > thead {
+        position: sticky;
+        top: 0;
+        background: white;
+
+        min-height: 40px;
+        height: 40px;
+
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+}
+
+.AdminDashboard_table tr {
+        height: 45px;
+}
+
+.AdminDashboard_table tbody > tr:nth-child(even) {
+        background: #F8F9FA;
+}
+
+.AdminDashboard_table th,
+.AdminDashboard_table td {
+        text-align: left;
+        padding: 0 30px;
+        white-space: nowrap;
+}
+
+.AdminDashboard_table td:nth-child(3) {
+        width: 100%;
+}
+
+.AdminDashboard_table tbody td:nth-child(1),
+.AdminDashboard_table tbody td:nth-child(4) {
+        text-align: center;
+}
+
+.AdminTable_userActiveIndicator {
+        height: 7.5px;
+        width: 7.5px;
+
+        margin-top: 7.5px;
+        margin-right: 5px;
+
+        border-radius: 3.75px;
+
+        float: left;
+
+        background: red;
+}
+
+.AdminTable_userActiveIndicator.active {
+        background: green;
+}
+
+.AdminDashboard_actionIcon {
+        height: 24px;
+        margin: 0 auto;
+
+        cursor: pointer;
+}

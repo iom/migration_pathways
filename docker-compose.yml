@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:14-alpine
+    container_name: migration-pathways-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-iom_uc2_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-your_secure_password}
+      POSTGRES_DB: ${DB_NAME:-iom_uc2}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-iom_uc2_user} -d ${DB_NAME:-iom_uc2}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - migration-network
+
+  # Backend API service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: migration-pathways-api
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-default_secret_key}
+      - DB_USERNAME=${DB_USERNAME:-iom_uc2_user}
+      - DB_PASSWORD=${DB_PASSWORD:-your_secure_password}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-iom_uc2}
+      - OPENAI_API_TYPE=${OPENAI_API_TYPE}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
+      - OPENAI_API_VERSION=${OPENAI_API_VERSION}
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY}
+      - AZURE_DEPLOYMENT_NAME=${AZURE_DEPLOYMENT_NAME}
+    ports:
+      - "8510:8510"
+    volumes:
+      - chroma_data:/app/chroma_store
+    networks:
+      - migration-network
+
+  # Frontend service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: migration-pathways-ui
+    restart: always
+    ports:
+      - "8509:80"
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://localhost:8510/api
+    networks:
+      - migration-network
+
+networks:
+  migration-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  chroma_data:
