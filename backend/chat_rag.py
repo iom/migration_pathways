@@ -5,11 +5,10 @@ from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import AzureOpenAIEmbeddings
-from embedder import generate_embeddings 
-from auth_utils import token_required
+from utility.embedder import generate_embeddings 
+from utility.auth_utils import token_required
 from sqlalchemy import text 
-# from uc_2_login_prod import engine
-from db_config import engine
+from utility.db_config import engine
 
 
 chat_blueprint = Blueprint("chat", __name__)
@@ -22,10 +21,10 @@ load_dotenv()
 
 # Azure OpenAI setup
 openai.api_type = os.getenv("OPENAI_API_TYPE")
-openai.api_base = os.getenv("OPENAI_API_BASE")
+openai.api_base = os.getenv("AZURE_OPENAI_ENDPOINT")
 openai.api_version = os.getenv("OPENAI_API_VERSION")
-openai.api_key = os.getenv("OPENAI_API_KEY")
-chat_deployment = os.getenv("OPENAI_DEPLOYMENT_NAME")
+openai.api_key = os.getenv("AZURE_OPENAI_API_KEY")
+chat_deployment = os.getenv("AZURE_DEPLOYMENT_NAME")
 embedding_deployment = "embedding-ada" 
 
 # Initialize Flask app

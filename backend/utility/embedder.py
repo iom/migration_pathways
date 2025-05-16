@@ -6,7 +6,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import AzureOpenAIEmbeddings
 from langchain_core.documents import Document
-from scraper_and_embedder import scrape_wakawell_pages
+from utility.scraper_and_embedder import scrape_wakawell_pages
 
 load_dotenv()
 

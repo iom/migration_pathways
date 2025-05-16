@@ -10,7 +10,7 @@ import urllib.parse
 from dotenv import load_dotenv
 import os
 from chat_rag import session_contexts
-from db_config import engine 
+from utility.db_config import engine 
 
 
 active_logins = {}  
@@ -154,10 +154,10 @@ def login():
         if not user:
             return jsonify({"error": "User does not exist!"}), 404
 
-        if not check_password_hash(user[2], password):
+        if not check_password_hash(user[3], password):
             return jsonify({"error": "Invalid password!"}), 401
 
-        if not user[4]:  # active column
+        if not user[5]:  # active column
             return jsonify({"error": "User is temporarily banned. Please contact admin."}), 403
 
 

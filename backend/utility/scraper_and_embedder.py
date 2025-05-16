@@ -22,7 +22,6 @@ wakawell_urls = [
     "https://www.wakawell.info/en/destination-mauritania",
     "https://www.wakawell.info/en/destination-nigeria"
 ]
-
 def get_page_content(url: str) -> str:
     headers = {
         "User-Agent": (
