@@ -781,5 +781,16 @@ def admin_logout():
     response.set_cookie("admin_token", "", expires=0)
     return response
 
+@app.route("/api/db-health", methods=["GET"])
+def db_health():
+    try:
+        # This just does a minimal query; if it fails, we catch it below
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        return jsonify({"status": "ok"}), 200
+    except Exception as e:
+        print(f"[DB HEALTH-ERROR] {e}")
+        return jsonify({"status": "fail", "error": str(e)}), 500
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=False)
