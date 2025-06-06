@@ -5,23 +5,37 @@ import hashlib
 from bs4 import BeautifulSoup
 from typing import List, Dict
 from dotenv import load_dotenv
+import json 
+import datetime
 
 load_dotenv()
 
-# (Wakawell pages)
-wakawell_urls = [
-    "https://www.wakawell.info/en",
-    "https://www.wakawell.info/en/learn",
-    "https://www.wakawell.info/en/about-us",
-    "https://www.wakawell.info/en/advocacy#no-back",
-    "https://www.wakawell.info/en/visa-wizard",
-    "https://www.wakawell.info/en/departure-senegal",
-    "https://www.wakawell.info/en/destination-guinea",
-    "https://www.wakawell.info/en/destination-mali",
-    "https://www.wakawell.info/en/destination-niger",
-    "https://www.wakawell.info/en/destination-mauritania",
-    "https://www.wakawell.info/en/destination-nigeria"
-]
+# # (Wakawell pages)
+# wakawell_urls = [
+#     "https://www.wakawell.info/en",
+#     "https://www.wakawell.info/en/learn",
+#     "https://www.wakawell.info/en/about-us",
+#     "https://www.wakawell.info/en/advocacy#no-back",
+#     "https://www.wakawell.info/en/visa-wizard",
+#     "https://www.wakawell.info/en/departure-senegal",
+#     "https://www.wakawell.info/en/destination-guinea",
+#     "https://www.wakawell.info/en/destination-mali",
+#     "https://www.wakawell.info/en/destination-niger",
+#     "https://www.wakawell.info/en/destination-mauritania",
+#     "https://www.wakawell.info/en/destination-nigeria"
+# ]
+
+def load_urls_from_config() -> List[str]:
+    config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "config", "urls.json"))
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            urls = json.load(f)
+            return urls if isinstance(urls, list) else []
+    except Exception as e:
+        print(f"[ERROR] Failed to load URLs from config: {e}")
+        return []
+
+
 def get_page_content(url: str) -> str:
     headers = {
         "User-Agent": (
@@ -72,11 +86,13 @@ def extract_content_from_url(url: str) -> Dict:
     }
 
 def scrape_wakawell_pages() -> List[Dict]:
-    print(f"🔎 Scraping {len(wakawell_urls)} Wakawell pages...\n")
-    content_list = []
+    urls_to_scrape = load_urls_from_config()
+    print(f"Scraping {len(urls_to_scrape)} pages from config/urls.json...\n")
 
+    content_list = []
     seen_hashes = set()
-    for url in wakawell_urls:
+
+    for url in urls_to_scrape:
         content = extract_content_from_url(url)
         if content and content["hash"] not in seen_hashes:
             seen_hashes.add(content["hash"])
@@ -84,11 +100,30 @@ def scrape_wakawell_pages() -> List[Dict]:
         else:
             print(f"⚠️ Skipped duplicate or empty: {url}")
 
-    print(f"\n✅ Successfully scraped {len(content_list)} unique pages.")
+    print(f"\nSuccessfully scraped {len(content_list)} unique pages.")
     return content_list
 
 # Test if running directly
 if __name__ == "__main__":
     results = scrape_wakawell_pages()
     for item in results:
-        print(f"\n📄 Page: {item['title']}\nURL: {item['url']}\nContent (first 300 chars):\n{item['text'][:300]}")
+        print(f"\n Page: {item['title']}\nURL: {item['url']}\n")
+    
+    # Save full scrape for QA
+    # with open("scraped_data_full.json", "w", encoding="utf-8") as f:
+    #     json.dump(results, f, indent=2, ensure_ascii=False)
+    # print("📝 Full scraped data saved to scraped_data_full.json")
+    
+    # Generate timestamped filename
+    timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")
+    filename = f"scraped_data_{timestamp}.json"
+
+    # Save versioned file
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(results, f, indent=2, ensure_ascii=False)
+    print(f" Full scraped data saved to {filename}")
+
+    # Also save/update latest copy for frontend/API
+    with open("scraped_data_full.json", "w", encoding="utf-8") as f:
+        json.dump(results, f, indent=2, ensure_ascii=False)
+    print(" Updated scraped_data_full.json with latest content")

@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  nginx-proxy:
+    build:
+      context: ./nginx-proxy
+      dockerfile: Dockerfile
+    image: ${REGISTRY_LOGIN_SERVER}/migration-pathways-nginx:latest
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: ${REGISTRY_LOGIN_SERVER}/migration-pathways-frontend:latest
+    restart: always
+    environment:
+      - VITE_BACKEND_URL=/api
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: ${REGISTRY_LOGIN_SERVER}/migration-pathways-backend:latest
+    restart: always
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - OPENAI_API_TYPE=azure
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
+      - AZURE_OPENAI_API_VERSION=${AZURE_OPENAI_API_VERSION}
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY}
+      - AZURE_DEPLOYMENT_NAME=${AZURE_DEPLOYMENT_NAME}
+      - AZURE_EMBEDDING_MODEL=${AZURE_EMBEDDING_MODEL}
+      - AZURE_OPENAI_ENDPOINT_EMBED=${AZURE_OPENAI_ENDPOINT_EMBED}
+      - AZURE_OPENAI_API_KEY_EMBED=${AZURE_OPENAI_API_KEY_EMBED}
+      - AZURE_EMBEDDING_DEPLOYMENT_NAME=${AZURE_EMBEDDING_DEPLOYMENT_NAME}      
+      - AZURE_OPENAI_API_VERSION_EMBED=${AZURE_OPENAI_API_VERSION_EMBED}           
+    volumes:
+      - chroma_data:/app/chroma_store
+
+volumes:
+  chroma_data:

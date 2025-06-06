@@ -13,7 +13,7 @@ COPY . .
 RUN mkdir -p chroma_store
 
 # Expose the application port
-EXPOSE 8510
+EXPOSE 80
 
 # Command to run the application
 CMD ["python", "main.py"]

@@ -20,6 +20,8 @@
         flex-direction: column;
 
         box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+        padding-bottom: 30px;
 }
 
 .AdminLogin_form_header {
@@ -54,55 +56,9 @@
         font-size: 26px;
         font-weight: 500;
 
-        padding: 25px 0;
+        margin-top: 32px;
 }
 
 .AdminLogin_form_title > img {
         height: 40px;
-}
-
-.AdminLogin_form_inputs {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-
-        width: 250px;
-
-        margin: 0 auto;
-}
-
-.AdminLogin_form_inputs > label {
-        margin-bottom: 5px;
-
-        font-size: 14px;
-        font-weight: 500;
-}
-
-.AdminLogin_form_inputs > input {
-        margin-bottom: 20px;
-
-        height: 40px;
-        padding: 0 12.5px;
-
-        font-size: 14px;
-
-        border: 1.5px solid #c0c0c0;
-        border-radius: 6px;
-}
-
-.AdminLogin_form_submit {
-        background: #0033AE;
-        box-shadow: 0px 5px 10px 0px #1053B133;
-
-        border: none;
-        outline: none;
-
-        height: 40px;
-        border-radius: 20px;
-
-        color: white;
-        font-weight: 600;
-
-        margin-top: 20px;
-        margin-bottom: 35px;
 }

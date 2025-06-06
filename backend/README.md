@@ -118,3 +118,8 @@ python utility/embedder.py
 
 # Step 6: Start the backend server
 python main.py
+
+# To reset Admin password
+Please run the reset_admin_pass.py script, it will ask for the admin's email id for which the password change is required.
+
+Update the password in CLI, this will automatically hash the plain text password and store the updated password in DB

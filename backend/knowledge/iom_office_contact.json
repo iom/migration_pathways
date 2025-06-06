@@ -1,0 +1,110 @@
+{
+  "IOM_Offices": [
+    {
+      "country": "India",
+      "city": "New Delhi",
+      "address": "UNESCO House, Ground Floor, 1, San Martin Marg, Chanakya Puri, New Delhi 110021",
+      "phone": ["+91 11 24100026", "+91 11 24100027"],
+      "email": "iomnewdelhi@iom.int"
+    },
+    {
+      "country": "Thailand",
+      "city": "Bangkok",
+      "offices": [
+        {
+          "name": "Bangkok Main Office",
+          "address": "18th Floor, Rajanakarn Building, 3 South Sathorn Road, Bangkok 10120",
+          "phone": ["(+66) 2-343-9300"],
+          "fax": "(+66) 2-343-9399",
+          "email": "iomthailand@iom.int"
+        },
+        {
+          "name": "Migration Health Assessment Center (MHAC)",
+          "address": "120 Kasemkij Building, 8th floor, Silom Road, Bangrak, Bangkok 10500",
+          "phone": ["(+66) 2-234-7950", "(+66) 2-234-7951", "(+66) 2-234-7952", "(+66) 2-234-7953", "(+66) 2-234-7954", "(+66) 2-234-7955"],
+          "fax": "(+66) 2-234-7956",
+          "email": "iommedbkk@iom.int"
+        }
+      ]
+    },
+    {
+      "country": "Montenegro",
+      "city": "Podgorica",
+      "address": "BC Hilton, Ulica Slobode 2, V floor, 81000 Podgorica",
+      "phone": ["+382 20 690 255", "+382 68 865 005"],
+      "email": ["iompodgorica@iom.int", "iommontenegro@iom.int"]
+    },
+    {
+      "country": "Kenya",
+      "city": "Nairobi",
+      "address": "Sri Aurobindo Avenue, Off Mzima Spring Road, Lavington",
+      "phone": ["+254 709 889 000"],
+      "email": "ronairobi@iom.int",
+      "media_contact": {
+        "phone": "+254 797 735 977",
+        "email": "ronairobimcu@iom.int"
+      }
+    },
+    {
+      "country": "Kenya",
+      "city": "Nairobi",
+      "office": "IOM Kenya",
+      "address": "Sri Aurobindo Avenue, Off Mzima Spring Road, Lavington, P.O BOX 55040-00200",
+      "call_center": "+254 709155555",
+      "head_office_phone": "+254 709 889 000",
+      "mhac": {
+        "address": "78, United Nations Crescent off UN Avenue, Gigiri - Nairobi",
+        "phone": "+254 709 890 000"
+      }
+    },
+    {
+      "country": "Somalia",
+      "city": "Mogadishu",
+      "address": "Aden Abdulle International Airport (AAIA), Mogadishu",
+      "email": "iomsomalia@iom.int",
+      "support_office": {
+        "city": "Nairobi",
+        "address": "Ngecha Rd, off Lower Kabete Road, Nairobi, Kenya, PO Box 1810 – 00606"
+      }
+    },
+    {
+      "country": "Ireland",
+      "city": "Dublin",
+      "address": "116 Lower Baggot Street, Dublin 2",
+      "phone": ["1800 406 406", "+353 1 676 0655"],
+      "fax": "+353 1 6760656",
+      "email": "iomdublin@iom.int"
+    },
+    {
+      "country": "South Africa",
+      "city": "Pretoria",
+      "address": "Walker Creek Office Park, 90 Florence Ribeiro Avenue, Muckleneuk, Pretoria 0181",
+      "phone": "+27 12 342 2789",
+      "email": "IOMPretoria2@iom.int"
+    },
+    {
+      "country": "Myanmar",
+      "city": "Yangon",
+      "address": "No. 50-B, Thiri Mingalar 2nd Street, Ward 8, Kamayut township",
+      "phone": ["+95 9 73236679", "+95 9 73236680", "+95 1 532279", "+95 1 523509"],
+      "fax": "+95 1 532279",
+      "email": "iomyangon@iom.int",
+      "website_inquiries": "iommyanmaronline@iom.int"
+    },
+    {
+      "country": "Egypt",
+      "city": "Cairo",
+      "address": "1191 Corniche El Nile, Boulac, World Trade Center Floor #15",
+      "phone": ["+20 2273 65140", "+20 2273 65141", "+20 2273 65142"],
+      "email": "MENAMEDIA@iom.int"
+    },
+    {
+      "country": "Austria",
+      "city": "Vienna",
+      "address": "Dampfschiffstrasse 4 / 10-11, 1030 Vienna",
+      "phone": "+43 1 581 22 22",
+      "email": "rovienna@iom.int",
+      "media_email": "ROViennaMCD@iom.int"
+    }
+  ]
+}

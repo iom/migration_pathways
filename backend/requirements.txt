@@ -6,7 +6,13 @@ python-dotenv
 PyJWT
 requests
 beautifulsoup4
-langchain_community==0.2.3
-openai==0.28.1
+langchain_community
+langchain_openai
+langchain-chroma
+openai
 chromadb
 tiktoken
+python-pptx
+pdfplumber
+pytest 
+pytest-flask

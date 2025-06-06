@@ -3,3 +3,8 @@ iomuc2_env
 __pycache__/
 chroma_store
 embedding_metadata.json
+test.py
+docs/*
+!docs/
+!docs/.gitignore
+prompt.py

@@ -12,6 +12,9 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+# Create .env file with API URL
+RUN echo "VITE_BACKEND_URL = \"/api\"" > .env
+
 # Build the application
 RUN npm run build
 
