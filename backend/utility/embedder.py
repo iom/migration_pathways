@@ -32,6 +32,7 @@ embedding_model = AzureOpenAIEmbeddings(
     deployment= os.getenv("AZURE_EMBEDDING_DEPLOYMENT_NAME")
 )
 
+
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=800,
     chunk_overlap=100,
