@@ -1,8 +1,52 @@
-# Migration Pathways – Immigration Assistant Chatbot
+# Migration Pathways – AI Chatbot for Safe and Informed Migration Decisions  
 
-## Overview
+**A humane AI assistant providing verified migration information and personalized pathways**  
 
-This project implements an AI-powered chatbot that helps users explore immigration options and pathways based on their personal circumstances. The application consists of a React frontend and a Python Flask backend with PostgreSQL database.
+## 🌍 About  
+
+The International Organization for Migration (IOM) is an intergovernmental organization that aims to promote humane and orderly migration for the benefit of all. This project presents an AI-powered solution to make migration **safer**, **smarter**, and **more informed**.  
+
+Migration journeys often involve significant risks:  
+⚠️ **Human Trafficking** - False employment promises leading to exploitation  
+⚠️ **Smuggling Networks** - Dangerous crossings resulting in financial loss or worse  
+⚠️ **Physical Violence** - Robbery, assault, or kidnapping during transit  
+
+This chatbot addresses critical information gaps migrants face when deciding:  
+- ✅ Ideal destination matching their profile  
+- 📝 Legal pathways based on nationality/skills  
+- 💼 Labor market realities  
+- 🎓 Education opportunities  
+- 🌐 Cultural integration  
+- 💰 Cost/risk assessment  
+
+## ✨ Key Features  
+
+| Feature | Benefit |  
+|---------|---------|  
+| **Always Updated** | Verified information with official sources |  
+| **Personalized Guidance** | Tailored to origin/destination/circumstances |  
+| **Emotionally Intelligent** | Detects and responds to user's emotional state |  
+| **Multilingual Support** | Accessible in native languages |  
+| **Conversational UI** | No complex documents - just natural dialogue |  
+
+## 🛠️ Technical Overview  
+
+**AI Agentic System Architecture**:  
+The application used an AI agentic system, powered by [CrewAI](https://docs.crewai.com/introduction), consists of a React frontend and a Python Flask backend with PostgreSQL database.
+
+## 🤝 Contributing
+
+> 🚧 This project is licensed under the MIT License. It is in active development. Contributions are welcome!
+
+The system uses IOM-standard proposal structures and can be definitely adapted to other UN Humanitarian agencies (e.g., UNHCR, OCHA, UNICEF, WFP).
+
+If you can contribute to the project, please follow these steps:
+1. Fork the repo
+2. Create a feature branch
+3. Commit changes
+4. Open a pull request
+
+
 
 ## Project Structure
 
@@ -100,6 +144,3 @@ The application can be deployed using Docker Compose:
 docker-compose -f docker-compose.yml up -d
 ```
 
-## License
-
-[Include your license information here]
