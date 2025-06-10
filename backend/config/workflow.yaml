@@ -1,0 +1,35 @@
+migration_chatbot_workflow:
+  description: >
+    Chatbot workflow to guide migrants safely through migration decisions using a combination of emotional intelligence, legal expertise, and personalized pathway analysis.
+  steps:
+    - task: translate_content
+      description: >
+        Translate user input to ensure the assistant agent can understand and process the user’s language accurately.
+
+    - task: collect_user_profile
+      description: >
+        Initiate dialogue with the user to collect relevant background details required for migration planning.
+
+    - task: detect_emotion
+      description: >
+        Evaluate the emotional state of the user to detect distress, anxiety, or hesitation during the conversation.
+
+    - task: analyze_profile
+      description: >
+        Process the user profile and identify appropriate legal pathways, destinations, and visa options based on current migration policies.
+
+    - task: provide_verified_info
+      description: >
+        Retrieve verified data on selected destinations including visa rules, employment markets, and migration risks.
+
+    - task: assess_risks_costs
+      description: >
+        Offer a comparative view of financial, safety, and legal aspects of each migration option for informed decision-making.
+
+    - task: offer_emotional_response
+      description: >
+        Generate empathetic messages based on detected emotional cues, helping users feel supported and safe.
+
+    - task: converse_naturally
+      description: >
+        Orchestrate the entire conversation flow, responding to the user and assigning subtasks to specialized agents seamlessly.

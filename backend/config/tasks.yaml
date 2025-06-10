@@ -1,0 +1,55 @@
+collect_user_profile:
+  description: >
+    Gather user’s background including nationality, age, education level, language, skills, and migration goals. Ensure responses are stored securely and clearly for downstream processing.
+  expected_output: >
+    A structured JSON containing the user profile attributes required for migration pathway matching.
+  agent: assistant_agent
+
+analyze_profile:
+  description: >
+    Analyze collected profile to identify the most suitable legal and safe migration pathways, matched with available destination countries.
+  expected_output: >
+    A list of recommended pathways with rationale, including visa types, countries, job markets, and education options.
+  agent: guide_agent
+
+provide_verified_info:
+  description: >
+    Retrieve accurate and updated legal, job market, and migration policy information based on user’s origin and destination.
+  expected_output: >
+    A JSON object containing country-specific legal requirements, visa regulations, risks, and current labor data.
+  agent: info_agent
+
+assess_risks_costs:
+  description: >
+    Present a comparative breakdown of potential financial cost, physical risk, and bureaucratic complexity for each migration route.
+  expected_output: >
+    A structured evaluation report helping users weigh their options based on objective metrics.
+  agent: guide_agent
+
+detect_emotion:
+  description: >
+    Continuously analyze user's language and tone to detect emotional state including stress, anxiety, or distress.
+  expected_output: >
+    Emotional state classification with confidence score and flag if escalation is needed.
+  agent: emotion_agent
+
+offer_emotional_response:
+  description: >
+    Generate a supportive and emotionally appropriate response to user input, ensuring the user feels heard and safe.
+  expected_output: >
+    A short, empathetic message or suggestion tailored to the detected emotional tone. May include escalation triggers.
+  agent: emotion_agent
+
+translate_content:
+  description: >
+    Translate all conversational content to and from the user’s selected language while preserving semantic integrity and cultural relevance.
+  expected_output: >
+    A translated version of input/output strings, retaining legal and contextual precision.
+  agent: translator_agent
+
+converse_naturally:
+  description: >
+    Maintain fluent, friendly dialogue with user, recognize intent, manage context, and delegate tasks to other agents as needed.
+  expected_output: >
+    Conversational flow text with embedded agent delegation points or decision triggers.
+  agent: assistant_agent

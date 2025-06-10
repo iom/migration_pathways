@@ -1,0 +1,93 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+
+%%{
+  init: {
+    'theme': 'neutral',
+    'themeVariables': {
+      'primaryColor': '#BB2528',
+      'primaryTextColor': '#fff',
+      'primaryBorderColor': '#7C0000',
+      'lineColor': '#F8B229',
+      'secondaryColor': '#006100',
+      'tertiaryColor': '#fff',
+      'fontSize': '28px'
+    }
+  }
+}%%
+flowchart TD
+  %% Styles
+  classDef startEndStyle fill:#d1e7dd,stroke:#198754,stroke-width:2px
+  classDef agentStyle fill:#cce5ff,stroke:#3399ff,stroke-width:1.5px
+  classDef taskStyle fill:#fff3cd,stroke:#ffc107,stroke-width:1.5px
+  classDef toolStyle fill:#d4edda,stroke:#28a745,stroke-width:1.5px
+
+  %% Start/End
+  START((Start)):::startEndStyle
+  END((End)):::startEndStyle
+
+  %% Agents (Rectangles)
+  A1["assistant_agent"]:::agentStyle
+  A2["guide_agent"]:::agentStyle
+  A3["info_agent"]:::agentStyle
+  A4["emotion_agent"]:::agentStyle
+  A5["translator_agent"]:::agentStyle
+
+  %% Tasks (Circles)
+  T1((collect_user_profile)):::taskStyle
+  T2((analyze_profile)):::taskStyle
+  T3((provide_verified_info)):::taskStyle
+  T4((assess_risks_costs)):::taskStyle
+  T5((detect_emotion)):::taskStyle
+  T6((offer_emotional_response)):::taskStyle
+  T7((translate_content)):::taskStyle
+  T8((converse_naturally)):::taskStyle
+
+  %% Tools (Parallelograms with Descriptive Labels)
+  TOOL1[/conversation_context_tool "Retrieves and summarizes past user interactions"/]:::toolStyle
+  TOOL2[/profile_analyzer_tool "Matches migrant profile to successful cases"/]:::toolStyle
+  TOOL3[/pathway_mapper_tool "Finds suitable legal migration routes"/]:::toolStyle
+  TOOL4[/legal_info_tool "Retrieves legal & visa data from official sources"/]:::toolStyle
+  TOOL5[/destination_db_tool "Provides labor, education, and culture insights"/]:::toolStyle
+  TOOL6[/sentiment_analyzer_tool "Detects emotional state and confidence"/]:::toolStyle
+  TOOL7[/escalation_tool "Flags mental health concerns for human review"/]:::toolStyle
+  TOOL8[/translation_tool "Provides culturally-accurate translations"/]:::toolStyle
+
+  %% Flow
+  START --> A1
+  A1 --> T8
+  T8 --> TOOL1
+
+  A5 --> T7
+  T7 --> TOOL8
+  T7 --> A1
+
+  A1 --> T1
+  T1 --> TOOL1
+
+  A4 --> T5
+  T5 --> TOOL6
+  T5 --> T6
+  T6 --> TOOL7
+  T6 --> A1
+
+  A2 --> T2
+  T2 --> TOOL2
+  T2 --> TOOL3
+
+  A3 --> T3
+  T3 --> TOOL4
+  T3 --> TOOL5
+
+  A2 --> T4
+  T4 --> TOOL3
+
+  T2 --> A1
+  T3 --> A1
+  T4 --> A1
+
+  A1 --> T8
+  T8 --> END

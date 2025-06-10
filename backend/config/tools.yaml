@@ -1,0 +1,98 @@
+legal_info_tool:
+  description: >
+    Performs RAG-based retrieval of up-to-date legal and visa information from a vector database containing international law, embassy advisories, and IOM regulations.
+    Combines similarity search with synthesis models to return concise, context-aware results.
+  endpoint: /api/tools/rag/legal_info
+  method: POST
+  input_schema:
+    - query: string
+    - context: optional<string>
+  output_schema:
+    - response: string
+    - sources: list<string>
+
+destination_db_tool:
+  description: >
+    Uses RAG over a country-specific migration knowledge base to return policy insights, cultural norms, job demand forecasts, and integration tips for selected destinations.
+    Leverages semantic similarity to extract multi-source information embedded in a vector DB.
+  endpoint: /api/tools/rag/destination_lookup
+  method: POST
+  input_schema:
+    - destination_country: string
+    - topic: optional<string>
+  output_schema:
+    - insights: string
+    - documents: list<string>
+
+profile_analyzer_tool:
+  description: >
+    Vector-matches user attributes (e.g., skills, education, language) against success profiles in existing migration program case studies stored in a vector DB.
+    Returns suggested profiles with scoring rationale.
+  endpoint: /api/tools/rag/profile_match
+  method: POST
+  input_schema:
+    - user_profile: object
+  output_schema:
+    - matched_profiles: list<object>
+    - summary: string
+
+pathway_mapper_tool:
+  description: >
+    Executes vector search across a structured corpus of legal migration pathways (e.g., skilled labor, family reunification, humanitarian) to synthesize personalized route options.
+  endpoint: /api/tools/rag/pathway_map
+  method: POST
+  input_schema:
+    - user_goals: string
+    - profile_vector: optional<array<float>>
+  output_schema:
+    - pathways: list<string>
+    - summary: string
+
+sentiment_analyzer_tool:
+  description: >
+    Analyzes user messages using an emotion classifier and retrieves coping strategies or past similar emotional contexts from a vector DB of psychosocial support guidance.
+  endpoint: /api/tools/rag/sentiment
+  method: POST
+  input_schema:
+    - message: string
+  output_schema:
+    - emotion: string
+    - confidence: float
+    - related_guidance: string
+
+escalation_tool:
+  description: >
+    Flags user for human intervention and fetches mental health escalation protocol from a vector DB if intense emotional distress is detected.
+  endpoint: /api/tools/rag/escalate
+  method: POST
+  input_schema:
+    - emotion_signal: string
+    - risk_level: int
+  output_schema:
+    - escalation_required: boolean
+    - action_plan: string
+
+translation_tool:
+  description: >
+    Provides culturally appropriate translations and retrieves localized legal or contextual terminology from a vector DB of translated corpora.
+  endpoint: /api/tools/rag/translate
+  method: POST
+  input_schema:
+    - text: string
+    - source_lang: string
+    - target_lang: string
+  output_schema:
+    - translated_text: string
+    - cultural_notes: optional<string>
+
+conversation_context_tool:
+  description: >
+    Retrieves relevant conversation history embeddings and summarizes context-aware memory from a vector store of user interactions, enabling seamless multi-turn flow.
+  endpoint: /api/tools/rag/context_memory
+  method: POST
+  input_schema:
+    - user_id: string
+    - current_message: string
+  output_schema:
+    - memory_summary: string
+    - memory_references: list<string>
