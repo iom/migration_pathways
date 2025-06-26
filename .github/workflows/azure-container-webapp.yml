@@ -78,28 +78,28 @@ jobs:
       - name: Build and Push Docker Images
         run: |
           echo "→ Substituting placeholders in $DOCKER_COMPOSE_PATH..."
-          sed -i \
-            -e "s|\\\$***REGISTRY_LOGIN_SERVER***|$REGISTRY_LOGIN_SERVER|g" \
-            -e "s|\\\$***OPENAI_API_TYPE***|$OPENAI_API_TYPE|g" \
-            -e "s|\\\$***AZURE_OPENAI_ENDPOINT***|$AZURE_OPENAI_ENDPOINT|g" \
-            -e "s|\\\$***AZURE_OPENAI_API_KEY***|$AZURE_OPENAI_API_KEY|g" \
-            -e "s|\\\$***AZURE_OPENAI_API_VERSION***|$AZURE_OPENAI_API_VERSION|g" \
-            -e "s|\\\$***AZURE_DEPLOYMENT_NAME***|$AZURE_DEPLOYMENT_NAME|g" \
-            -e "s|\\\$***AZURE_EMBEDDING_MODEL***|$AZURE_EMBEDDING_MODEL|g" \
-            -e "s|\\\$***AZURE_OPENAI_ENDPOINT_EMBED***|$AZURE_OPENAI_ENDPOINT_EMBED|g" \
-            -e "s|\\\$***AZURE_OPENAI_API_KEY_EMBED***|$AZURE_OPENAI_API_KEY_EMBED|g" \
-            -e "s|\\\$***AZURE_EMBEDDING_DEPLOYMENT_NAME***|$AZURE_EMBEDDING_DEPLOYMENT_NAME|g" \
-            -e "s|\\\$***AZURE_OPENAI_API_VERSION_EMBED***|$AZURE_OPENAI_API_VERSION_EMBED|g" \
-            -e "s|\\\$***DB_USERNAME***|$DB_USERNAME|g" \
-            -e "s|\\\$***DB_PASSWORD***|$DB_PASSWORD|g" \
-            -e "s|\\\$***DB_NAME***|$DB_NAME|g" \
-            -e "s|\\\$***DB_HOST***|$DB_HOST|g" \
-            -e "s|\\\$***DB_PORT***|$DB_PORT|g" \
-            -e "s|\\\$***SECRET_KEY***|$SECRET_KEY|g" \
-            -e "s|\\\$***AZURE_BLOB_CONNECTION_STRING***|$AZURE_BLOB_CONNECTION_STRING|g" \
-            -e "s|\\\$***AZURE_BLOB_KB***|$AZURE_BLOB_KB|g" \
-            -e "s|\\\$***AZURE_BLOB_UPLOAD***|$AZURE_BLOB_UPLOAD|g" \
-            "$DOCKER_COMPOSE_PATH"
+          
+          # Use individual sed commands with proper escaping
+          sed -i "s/\$\*\*\*REGISTRY_LOGIN_SERVER\*\*\*/$REGISTRY_LOGIN_SERVER/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*OPENAI_API_TYPE\*\*\*/$OPENAI_API_TYPE/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*AZURE_OPENAI_ENDPOINT\*\*\*/$AZURE_OPENAI_ENDPOINT/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*AZURE_OPENAI_API_KEY\*\*\*/$AZURE_OPENAI_API_KEY/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*AZURE_OPENAI_API_VERSION\*\*\*/$AZURE_OPENAI_API_VERSION/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*AZURE_DEPLOYMENT_NAME\*\*\*/$AZURE_DEPLOYMENT_NAME/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*AZURE_EMBEDDING_MODEL\*\*\*/$AZURE_EMBEDDING_MODEL/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*AZURE_OPENAI_ENDPOINT_EMBED\*\*\*/$AZURE_OPENAI_ENDPOINT_EMBED/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*AZURE_OPENAI_API_KEY_EMBED\*\*\*/$AZURE_OPENAI_API_KEY_EMBED/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*AZURE_EMBEDDING_DEPLOYMENT_NAME\*\*\*/$AZURE_EMBEDDING_DEPLOYMENT_NAME/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*AZURE_OPENAI_API_VERSION_EMBED\*\*\*/$AZURE_OPENAI_API_VERSION_EMBED/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*DB_USERNAME\*\*\*/$DB_USERNAME/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*DB_PASSWORD\*\*\*/$DB_PASSWORD/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*DB_NAME\*\*\*/$DB_NAME/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*DB_HOST\*\*\*/$DB_HOST/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*DB_PORT\*\*\*/$DB_PORT/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*SECRET_KEY\*\*\*/$SECRET_KEY/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*AZURE_BLOB_CONNECTION_STRING\*\*\*/$AZURE_BLOB_CONNECTION_STRING/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*AZURE_BLOB_KB\*\*\*/$AZURE_BLOB_KB/g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s/\$\*\*\*AZURE_BLOB_UPLOAD\*\*\*/$AZURE_BLOB_UPLOAD/g" "$DOCKER_COMPOSE_PATH"
     
           echo "→ Final compose file (for debugging):"
           cat "$DOCKER_COMPOSE_PATH"
