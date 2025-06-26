@@ -3,6 +3,7 @@
 # Cell 1: Imports and Environment Variables
 import os
 from langchain_openai import AzureOpenAIEmbeddings
+from langchain_openai import AzureChatOpenAI
 from openai import AzureOpenAI
 
 from dotenv import load_dotenv
@@ -61,3 +62,27 @@ def test_llm():
         print("LLM test failed:", str(e))
 
 test_llm()
+
+def test_langchain_llm():
+    print("\n--- Testing Langchain Azure OpenAI Chat Completion Connection ---")
+    try:
+        llm = AzureChatOpenAI(
+            azure_deployment=os.getenv("AZURE_DEPLOYMENT_NAME"),
+            azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+            openai_api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+            openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+        #   model_name=f"azure/{os.getenv('AZURE_DEPLOYMENT_NAME')}",
+            # deployment_model=f"azure/{os.getenv('"EMBEDDING_MODEL"')}",
+            max_retries=3,
+            timeout=30
+        )
+        # Construct a minimal chat request
+        system_msg = {"role": "system", "content": "You are a test assistant."}
+        user_msg = {"role": "user", "content": "Hello, how are you?"}
+        messages=[system_msg, user_msg]
+        response = llm.invoke(messages)
+        print("LLM test successful! Response:", response.content)
+    except Exception as e:
+        print("LLM test failed:", str(e))
+
+test_langchain_llm()

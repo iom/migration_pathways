@@ -7,6 +7,8 @@ from typing import List, Dict
 from dotenv import load_dotenv
 import json 
 import datetime
+from utility.blob_file_utils import read_json_from_blob, write_json_to_blob
+from playwright.sync_api import sync_playwright
 
 load_dotenv()
 
@@ -25,34 +27,60 @@ load_dotenv()
 #     "https://www.wakawell.info/en/destination-nigeria"
 # ]
 
-def load_urls_from_config() -> List[str]:
-    config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "config", "urls.json"))
+# def load_urls_from_config() -> List[str]:
+#     config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "config", "urls.json"))
+#     try:
+#         with open(config_path, "r", encoding="utf-8") as f:
+#             urls = json.load(f)
+#             return urls if isinstance(urls, list) else []
+#     except Exception as e:
+#         print(f"[ERROR] Failed to load URLs from config: {e}")
+#         return []
+
+def load_urls_from_blob() -> List[str]:
     try:
-        with open(config_path, "r", encoding="utf-8") as f:
-            urls = json.load(f)
-            return urls if isinstance(urls, list) else []
+        urls = read_json_from_blob("urls.json")
+        print("Retrieved URLs from blob:", urls)
+        if isinstance(urls, list):
+            print(f" Loaded {len(urls)} URLs from blob: knowledge-base-source/urls.json")
+            return urls
+        else:
+            print(" Invalid format: urls.json is not a list.")
+            return []
     except Exception as e:
-        print(f"[ERROR] Failed to load URLs from config: {e}")
+        print(f"[ERROR] Failed to load URLs from blob: {e}")
         return []
 
 
+# def get_page_content(url: str) -> str:
+#     headers = {
+#         "User-Agent": (
+#             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+#             "AppleWebKit/537.36 (KHTML, like Gecko) "
+#             "Chrome/122.0.0.0 Safari/537.36"
+#         )
+#     }
+
+#     response = requests.get(url, headers=headers)
+
+#     if response.status_code == 200:
+#         return response.text
+#     else:
+#         print(f"[ERROR] Failed to fetch {url} - Status code: {response.status_code}")
+#         return ""
+
 def get_page_content(url: str) -> str:
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/122.0.0.0 Safari/537.36"
-        )
-    }
-
-    response = requests.get(url, headers=headers)
-
-    if response.status_code == 200:
-        return response.text
-    else:
-        print(f"[ERROR] Failed to fetch {url} - Status code: {response.status_code}")
+    try:
+        with sync_playwright() as p:
+            browser = p.firefox.launch(headless=True)
+            page = browser.new_page()
+            page.goto(url, timeout=30000)
+            content = page.content()
+            print(f" [200] Successfully fetched {url}")
+            return content
+    except Exception as e:
+        print(f"[ERROR] Failed to scrape {url} with Playwright: {e}")
         return ""
-
 
 def extract_main_content(soup: BeautifulSoup) -> str:
     for elem in soup.find_all(['nav', 'header', 'footer', 'script', 'style']):
@@ -86,7 +114,7 @@ def extract_content_from_url(url: str) -> Dict:
     }
 
 def scrape_wakawell_pages() -> List[Dict]:
-    urls_to_scrape = load_urls_from_config()
+    urls_to_scrape = load_urls_from_blob()
     print(f"Scraping {len(urls_to_scrape)} pages from config/urls.json...\n")
 
     content_list = []

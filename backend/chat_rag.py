@@ -4,7 +4,7 @@ import openai
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 #from langchain_community.vectorstores import Chroma
-from langchain_chroma import Chroma
+#from langchain_chroma import Chroma
 #from langchain_community.embeddings import AzureOpenAIEmbeddings
 # from utility.embedder import generate_embeddings 
 from langchain_openai import AzureOpenAIEmbeddings
@@ -13,7 +13,15 @@ from sqlalchemy import text
 from utility.db_config import engine
 from utility.json_loader import load_json_knowledge, format_json_knowledge_as_text
 from openai import AzureOpenAI
-
+from utility.db_config import get_db_connection
+from langchain_core.documents import Document
+from pgvector.psycopg2 import register_vector
+from langchain_core.documents import Document
+from utility.db_config import get_db_connection
+from utility.db_config import get_db_connection as get_pg_connection
+import uuid
+from datetime import datetime
+import json
 
 chat_blueprint = Blueprint("chat", __name__)
 
@@ -34,7 +42,7 @@ load_dotenv()
 app = Flask(__name__)
 
 # Load Chroma DB
-CHROMA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "chroma_store"))
+# CHROMA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "chroma_store"))
 
 # embedding_model = AzureOpenAIEmbeddings(
 #     azure_deployment=embedding_deployment,
@@ -55,7 +63,50 @@ llm = AzureOpenAI(
   api_version= os.getenv("AZURE_OPENAI_API_VERSION"),
 )
 
-vector_store = Chroma(persist_directory=CHROMA_DIR, embedding_function=embedding_model)
+# vector_store = Chroma(persist_directory=CHROMA_DIR, embedding_function=embedding_model)
+
+def search_similar_documents_pgvector(query: str, k: int = 8, threshold: float = 0.3) -> list[Document]:
+    query_embedding = embedding_model.embed_query(query)
+    embedding_str = "[" + ",".join([str(x) for x in query_embedding]) + "]"
+    distance_threshold = 1 - threshold
+
+    sql = f"""
+        SELECT
+            id, content, source, source_url, title,
+            1 - (embedding <=> %s::vector) AS similarity
+        FROM embeddings
+        WHERE embedding <=> %s::vector < {distance_threshold}
+        ORDER BY embedding <=> %s::vector
+        LIMIT {k}
+    """
+
+    try:
+        conn = get_pg_connection()
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(sql, (embedding_str, embedding_str, embedding_str))
+                rows = cur.fetchall()
+
+        docs = []
+        for row in rows:
+            doc = Document(
+                page_content=row[1],
+                metadata={
+                    "id": row[0],
+                    "source": row[2],
+                    "source_url": row[3],
+                    "title": row[4],
+                    "similarity": row[5]
+                }
+            )
+            docs.append(doc)
+
+        return docs
+
+    except Exception as e:
+        print(" Failed to retrieve chunks from PostgreSQL:", e)
+        return []
+
 
 
 
@@ -94,13 +145,15 @@ def chat(user_email):
         threshold = 0.3
 
     # 1. Retrieve relevant documents from Chroma
-    retriever = vector_store.as_retriever(
-        search_type="similarity_score_threshold",
-        # search_kwargs={"k": 6, "score_threshold": 0.3}
-        search_kwargs = {"k": k, "score_threshold": threshold} #testing
+    # retriever = vector_store.as_retriever(
+    #     search_type="similarity_score_threshold",
+    #     # search_kwargs={"k": 6, "score_threshold": 0.3}
+    #     search_kwargs = {"k": k, "score_threshold": threshold} #testing
 
-    )
-    docs = retriever.get_relevant_documents(user_query)
+    # )
+    # docs = retriever.get_relevant_documents(user_query)
+    docs = search_similar_documents_pgvector(user_query, k=k, threshold=threshold)
+
 
 
     DEBUG_MODE = True  # Toggle to False in production
@@ -178,6 +231,41 @@ def chat(user_email):
         )
         response_text = completion.choices[0].message.content.strip()
 
+        try:
+            chat_id = str(uuid.uuid4())
+            sources_json = [
+                {
+                    "filename": doc.metadata.get("filename"),
+                    "title": doc.metadata.get("title"),
+                    "source_url": doc.metadata.get("source_url"),
+                    "score": doc.metadata.get("similarity")
+                }
+                for doc in docs
+            ]
+
+            with get_db_connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO conversation_history (
+                            id, email, user_message, bot_response, timestamp, session_id, sources
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        """,
+                        (
+                            chat_id,
+                            user_email,
+                            user_query,
+                            response_text,
+                            datetime.utcnow(),
+                            None,
+                            json.dumps(sources_json)
+                        )
+                    )
+                conn.commit()
+            print(f" Logged conversation {chat_id}")
+        except Exception as e:
+            print(f"Failed to log chat: {e}")
+            
         # 6. Add assistant response to memory
         convo_history.append({"role": "assistant", "content": response_text})
         session_contexts[user_email] = convo_history

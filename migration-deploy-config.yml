@@ -33,6 +33,9 @@ env:
   DB_HOST: ${{ secrets.DB_HOST }}
   DB_PORT: ${{ secrets.DB_PORT }}
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  AZURE_BLOB_CONNECTION_STRING: ${{ secrets.AZURE_BLOB_CONNECTION_STRING }}
+  AZURE_BLOB_KB: ${{ secrets.AZURE_BLOB_KB }}
+  AZURE_BLOB_UPLOAD: ${{ secrets.AZURE_BLOB_UPLOAD }}
 
 jobs:
   build-and-deploy:
@@ -93,6 +96,9 @@ jobs:
             -e "s|\${DB_HOST}|${DB_HOST}|g" \
             -e "s|\${DB_PORT}|${DB_PORT}|g" \
             -e "s|\${SECRET_KEY}|${SECRET_KEY}|g" \
+            -e "s|\${AZURE_BLOB_CONNECTION_STRING}|${AZURE_BLOB_CONNECTION_STRING}|g" \ 
+            -e "s|\${AZURE_BLOB_KB}|${AZURE_BLOB_KB}|g" \
+            -e "s|\${AZURE_BLOB_UPLOAD}|${AZURE_BLOB_UPLOAD}|g" \                                   
             "$DOCKER_COMPOSE_PATH"
     
           echo "→ Final compose file (for debugging):"
@@ -145,6 +151,9 @@ jobs:
               DB_NAME="${{ env.DB_NAME }}" \
               DB_HOST="${{ env.DB_HOST }}" \
               DB_PORT="${{ env.DB_PORT }}" \
+              AZURE_BLOB_CONNECTION_STRING="${{ env.AZURE_BLOB_CONNECTION_STRING }}" \
+              AZURE_BLOB_KB="${{ env.AZURE_BLOB_KB }}" \
+              AZURE_BLOB_UPLOAD="${{ env.AZURE_BLOB_UPLOAD }}" \
               SECRET_KEY="${{ env.SECRET_KEY }}"
 
       - name: Deploy Multi-Container App to Azure App Service

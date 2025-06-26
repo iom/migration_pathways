@@ -11,12 +11,19 @@ from dotenv import load_dotenv
 import os
 from chat_rag import session_contexts
 from utility.db_config import engine 
-from chat_rag import chat_blueprint 
+from chat_rag import chat_blueprint
+from chat_crew_ai import crew_chat_blueprint 
 
 from utility.scraper_and_embedder import scrape_wakawell_pages
 from utility.embedder import prepare_documents, embed_and_store_documents
 import datetime
 import json
+
+from utility.blob_uploader import upload_to_azure_blob
+import tempfile
+
+from utility.blob_file_utils import read_json_from_blob
+from utility.blob_file_utils import write_json_to_blob
 
 active_logins = {}  
 
@@ -27,6 +34,7 @@ CORS(app, supports_credentials=True)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key')
 
 app.register_blueprint(chat_blueprint)
+app.register_blueprint(crew_chat_blueprint)
 
 db_username = os.getenv('DB_USERNAME')
 db_password = os.getenv('DB_PASSWORD')
@@ -591,14 +599,16 @@ def add_url():
         if token_email != email:
             return jsonify({"error": "Email mismatch with authenticated admin"}), 403
 
-        config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "config", "urls.json"))
+        # config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "config", "urls.json"))
 
-        # Load existing URLs
-        with open(config_path, "r", encoding="utf-8") as f:
-            urls = json.load(f)
+        # # Load existing URLs
+        # with open(config_path, "r", encoding="utf-8") as f:
+        #     urls = json.load(f)
 
         # if new_url in urls:
         #     return jsonify({"message": "URL already exists in the list"}), 200
+        urls = read_json_from_blob("urls.json")
+
         if new_url in urls:
             return jsonify({
                 "status": "duplicate",
@@ -608,9 +618,10 @@ def add_url():
 
 
         urls.append(new_url)
+        write_json_to_blob("urls.json", urls)
 
-        with open(config_path, "w", encoding="utf-8") as f:
-            json.dump(urls, f, indent=2)
+        # with open(config_path, "w", encoding="utf-8") as f:
+        #     json.dump(urls, f, indent=2)
 
         #  (Optional) log entry for future tracking
         print(f"[AUDIT] Admin '{email}' added URL: {new_url}")
@@ -631,9 +642,11 @@ def add_url():
 @admin_required
 def list_all_urls():
     try:
-        config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "config", "urls.json"))
-        with open(config_path, "r", encoding="utf-8") as f:
-            urls = json.load(f)
+        # config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "config", "urls.json"))
+        # with open(config_path, "r", encoding="utf-8") as f:
+        #     urls = json.load(f)
+        from utility.blob_file_utils import read_json_from_blob
+        urls = read_json_from_blob("urls.json")
 
         return jsonify({
             "urls": urls,
@@ -660,17 +673,23 @@ def run_extraction():
         # Step 2: Save to timestamped file
         timestamp = datetime.datetime.now()
         timestamp_str = timestamp.strftime("%Y_%m_%d_%H_%M")
-        versioned_file = f"scraped_data_{timestamp_str}.json"
-        latest_file = "scraped_data_full.json"
+        versioned_file = f"scraped-data/scraped_data_{timestamp_str}.json"
+        latest_file = "scraped-data/scraped_data_full.json"
 
-        with open(versioned_file, "w", encoding="utf-8") as f:
-            json.dump(scraped_data, f, indent=2, ensure_ascii=False)
+        # with open(versioned_file, "w", encoding="utf-8") as f:
+        #     json.dump(scraped_data, f, indent=2, ensure_ascii=False)
 
-        with open(latest_file, "w", encoding="utf-8") as f:
-            json.dump(scraped_data, f, indent=2, ensure_ascii=False)
+        # with open(latest_file, "w", encoding="utf-8") as f:
+        #     json.dump(scraped_data, f, indent=2, ensure_ascii=False)
         
-        with open("metadata.json", "w") as f:
-            json.dump({"last_updated_on": timestamp.strftime("%Y-%m-%d %H:%M:%S")}, f)
+        # with open("metadata.json", "w") as f:
+        #     json.dump({"last_updated_on": timestamp.strftime("%Y-%m-%d %H:%M:%S")}, f)
+
+        write_json_to_blob(versioned_file, scraped_data)
+        write_json_to_blob(latest_file, scraped_data)
+        write_json_to_blob("scraped-data/metadata.json", {
+            "last_updated_on": timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        })
 
         print(f" Scraped data saved to {versioned_file} and updated {latest_file}")
 
@@ -711,13 +730,16 @@ def run_extraction():
 @admin_required
 def get_latest_extracted_data():
     try:
-        import json
+        # import json
 
-        with open("scraped_data_full.json", "r", encoding="utf-8") as f:
-            sections = json.load(f)
+        # with open("scraped_data_full.json", "r", encoding="utf-8") as f:
+        #     sections = json.load(f)
 
-        with open("metadata.json", "r", encoding="utf-8") as f:
-            meta = json.load(f)
+        # with open("metadata.json", "r", encoding="utf-8") as f:
+        #     meta = json.load(f)
+
+        sections = read_json_from_blob("scraped-data/scraped_data_full.json")
+        meta = read_json_from_blob("scraped-data/metadata.json")
 
         return jsonify({
             "status": "success",
@@ -739,6 +761,42 @@ def get_latest_extracted_data():
         }), 500
 
 
+#local file storage code
+# @app.route("/api/admin/upload-doc", methods=["POST"])
+# @admin_required
+# def upload_doc():
+#     try:
+#         if "file" not in request.files:
+#             return jsonify({"error": "No file part in request"}), 400
+
+#         uploaded_file = request.files["file"]
+#         email = request.form.get("email")
+
+#         if not uploaded_file or uploaded_file.filename == "":
+#             return jsonify({"error": "No file selected"}), 400
+
+#         if not email:
+#             return jsonify({"error": "Missing admin email"}), 400
+
+#         filename = uploaded_file.filename
+#         save_dir = "docs"
+#         os.makedirs(save_dir, exist_ok=True)
+#         save_path = os.path.join("docs", filename)
+
+#         uploaded_file.save(save_path)
+#         print(f" File saved to: {save_path}")
+
+#         # Embed using your embedder logic
+#         from utility.embedder import embed_uploaded_file
+#         result = embed_uploaded_file(save_path, uploaded_by=email)
+
+#         return jsonify(result), 200 if result["status"] == "success" else 409
+
+#     except Exception as e:
+#         print(f" Upload error: {e}")
+#         return jsonify({"error": "Upload failed", "message": str(e)}), 500
+
+#blob storage file code
 @app.route("/api/admin/upload-doc", methods=["POST"])
 @admin_required
 def upload_doc():
@@ -756,22 +814,33 @@ def upload_doc():
             return jsonify({"error": "Missing admin email"}), 400
 
         filename = uploaded_file.filename
-        save_dir = "docs"
-        os.makedirs(save_dir, exist_ok=True)
-        save_path = os.path.join("docs", filename)
+        print(f"Received file: {filename} from {email}")
 
-        uploaded_file.save(save_path)
-        print(f" File saved to: {save_path}")
+        # Upload to Azure Blob
+        blob_url = upload_to_azure_blob(uploaded_file.stream, filename)
 
-        # Embed using your embedder logic
+        # Save temporarily for embedding
+        # temp_local_path = f"/tmp/{filename}"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(filename)[1]) as tmp_file:
+            temp_local_path = tmp_file.name
+            uploaded_file.stream.seek(0) 
+            uploaded_file.save(temp_local_path)
+            print(f" Temp file saved to: {temp_local_path} for embedding")
+
         from utility.embedder import embed_uploaded_file
-        result = embed_uploaded_file(save_path, uploaded_by=email)
+        result = embed_uploaded_file(temp_local_path, uploaded_by=email)
 
+        # Clean up
+        os.remove(temp_local_path)
+        print(f" Temp file deleted: {temp_local_path}")
+
+        result["blob_url"] = blob_url
         return jsonify(result), 200 if result["status"] == "success" else 409
 
     except Exception as e:
         print(f" Upload error: {e}")
         return jsonify({"error": "Upload failed", "message": str(e)}), 500
+
 
 
 @app.route("/api/admin/logout", methods=["POST"])
@@ -794,3 +863,4 @@ def db_health():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=False)
+    #app.run(host="0.0.0.0", port=8510, debug=False)

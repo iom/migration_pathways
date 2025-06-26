@@ -16,3 +16,11 @@ python-pptx
 pdfplumber
 pytest 
 pytest-flask
+crewai
+crewai-tools
+pydantic
+langchain-core
+langchain-text-splitters
+pgvector
+azure-storage-blob
+playwright
