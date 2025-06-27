@@ -79,7 +79,33 @@ jobs:
         run: |
           echo "→ Substituting placeholders in $DOCKER_COMPOSE_PATH..."
           
-          # Use a safe delimiter (|) to avoid conflicts with URLs and special characters
+          # Create a backup of the original file
+          cp "$DOCKER_COMPOSE_PATH" "$DOCKER_COMPOSE_PATH.backup"
+          
+          # Replace environment variables in Docker Compose file
+          # Use | as delimiter to avoid conflicts with URLs and special characters
+          sed -i "s|\${REGISTRY_LOGIN_SERVER}|$REGISTRY_LOGIN_SERVER|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${OPENAI_API_TYPE}|$OPENAI_API_TYPE|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${AZURE_OPENAI_ENDPOINT}|$AZURE_OPENAI_ENDPOINT|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${AZURE_OPENAI_API_KEY}|$AZURE_OPENAI_API_KEY|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${AZURE_OPENAI_API_VERSION}|$AZURE_OPENAI_API_VERSION|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${AZURE_DEPLOYMENT_NAME}|$AZURE_DEPLOYMENT_NAME|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${AZURE_EMBEDDING_MODEL}|$AZURE_EMBEDDING_MODEL|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${AZURE_OPENAI_ENDPOINT_EMBED}|$AZURE_OPENAI_ENDPOINT_EMBED|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${AZURE_OPENAI_API_KEY_EMBED}|$AZURE_OPENAI_API_KEY_EMBED|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${AZURE_EMBEDDING_DEPLOYMENT_NAME}|$AZURE_EMBEDDING_DEPLOYMENT_NAME|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${AZURE_OPENAI_API_VERSION_EMBED}|$AZURE_OPENAI_API_VERSION_EMBED|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${DB_USERNAME}|$DB_USERNAME|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${DB_PASSWORD}|$DB_PASSWORD|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${DB_NAME}|$DB_NAME|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${DB_HOST}|$DB_HOST|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${DB_PORT}|$DB_PORT|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${SECRET_KEY}|$SECRET_KEY|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${AZURE_BLOB_CONNECTION_STRING}|$AZURE_BLOB_CONNECTION_STRING|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${AZURE_BLOB_KB}|$AZURE_BLOB_KB|g" "$DOCKER_COMPOSE_PATH"
+          sed -i "s|\${AZURE_BLOB_UPLOAD}|$AZURE_BLOB_UPLOAD|g" "$DOCKER_COMPOSE_PATH"
+          
+          # Also handle any old format placeholders that might still exist
           sed -i "s|\$\*\*\*REGISTRY_LOGIN_SERVER\*\*\*|$REGISTRY_LOGIN_SERVER|g" "$DOCKER_COMPOSE_PATH"
           sed -i "s|\$\*\*\*OPENAI_API_TYPE\*\*\*|$OPENAI_API_TYPE|g" "$DOCKER_COMPOSE_PATH"
           sed -i "s|\$\*\*\*AZURE_OPENAI_ENDPOINT\*\*\*|$AZURE_OPENAI_ENDPOINT|g" "$DOCKER_COMPOSE_PATH"
@@ -101,8 +127,21 @@ jobs:
           sed -i "s|\$\*\*\*AZURE_BLOB_KB\*\*\*|$AZURE_BLOB_KB|g" "$DOCKER_COMPOSE_PATH"
           sed -i "s|\$\*\*\*AZURE_BLOB_UPLOAD\*\*\*|$AZURE_BLOB_UPLOAD|g" "$DOCKER_COMPOSE_PATH"
     
+          echo "→ Showing differences between original and processed compose file:"
+          diff "$DOCKER_COMPOSE_PATH.backup" "$DOCKER_COMPOSE_PATH" || true
+          
           echo "→ Final compose file (for debugging):"
           cat "$DOCKER_COMPOSE_PATH"
+          
+          echo "→ Validating that no placeholders remain:"
+          if grep -q '\${' "$DOCKER_COMPOSE_PATH"; then
+            echo "❌ WARNING: Unresolved placeholders found:"
+            grep '\${' "$DOCKER_COMPOSE_PATH"
+          fi
+          if grep -q '\$\*\*\*' "$DOCKER_COMPOSE_PATH"; then
+            echo "❌ WARNING: Unresolved old-format placeholders found:"
+            grep '\$\*\*\*' "$DOCKER_COMPOSE_PATH"
+          fi
 
           echo "→ Building Docker images..."
           docker compose -f "$DOCKER_COMPOSE_PATH" build --no-cache
