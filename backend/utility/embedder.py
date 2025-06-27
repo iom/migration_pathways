@@ -17,6 +17,7 @@ from utility.db_config import connection_string
 from utility.db_config import get_db_connection
 from langchain_community.vectorstores.pgvector import PGVector
 import os
+from utility.blob_file_utils import write_json_to_blob
 
 load_dotenv()
 
@@ -284,6 +285,7 @@ def embed_uploaded_file(file_path: str, uploaded_by: str) -> dict:
             "uploaded_by": uploaded_by
         })
         save_uploaded_metadata(metadata_list)
+        write_json_to_blob("uploaded_files.json", metadata_list)
 
         return {
             "status": "success",
